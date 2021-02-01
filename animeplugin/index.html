@@ -7,6 +7,10 @@
   <style>
     html, body {
         margin: 0;
+        pointer-events: none;
+    }
+    canvas{
+      pointer-events: all;
     }
   </style>
   <!-- Pollyfill script -->
@@ -15,10 +19,6 @@
   <script src = "./Core/live2dcubismcore.js"></script>
   <!-- Build script -->
   <script src = "./dist/bundle.js"></script>
-  <script>
-    var parent = window.parent.document;
-    parent.addEventListener("mousemove",()=>{window.dispatchEvent(new Event('mousemove'))});
-  </script>
 </head>
 <body>
 </body>
