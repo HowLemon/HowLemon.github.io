@@ -8,7 +8,9 @@ function getNode(data, layer, container){
 
     //設定這個treemap的寬和高
 	var height = container.clientHeight - margin.top - margin.bottom;
-	var width = container.clientWidth - margin.left - margin.right;
+    var width = container.clientWidth - margin.left - margin.right;
+    height = 5000;
+    width = 5000;
 
     var svg = d3.select(treemap)
                   .append('svg')
