@@ -73,7 +73,7 @@ function getNode(data, layer, container){
     //設定透明度，越低越透明
     var opacity = d3.scaleLinear()
                     //設定區間，看最高多少和最低多少
-                      .domain([120, 25])
+                      .domain([100, 3])
                     //設定區間的透明度
                       .range([1,.5])
                       
