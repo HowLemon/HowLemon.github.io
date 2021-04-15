@@ -81,7 +81,7 @@ function dataClassifier(key, callback) {
 	}
 	
 	//將原有數值對應到較小的區間
-	var mapping = makeMapping([20, 100])
+	var mapping = makeMapping([5, 100])
 
     var d3json = {
         children: [],
