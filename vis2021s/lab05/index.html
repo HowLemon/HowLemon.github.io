@@ -1,14 +1,166 @@
 <!DOCTYPE html>
 <html lang="zh-Hant-TW">
-  <head>
-    <meta charset="utf-8">
-    <title>D3 Page Template</title>
-    <script src="http://d3js.org/d3.v6.min.js" charset="utf-8"></script> <!-- v6.5.0 -->
+
+<head>
+  <meta charset="utf-8">
+  <title>D3 Page Template</title>
+  <script src="http://d3js.org/d3.v6.min.js" charset="utf-8"></script> <!-- v6.5.0 -->
+  <script src="Smooth-0.1.7.js"></script>
+  <style>
+    .container {
+      display: table;
+      width: 800px;
+      height: 600px;
+      border:1px black solid;
+    }
+    .container > .bar{
+      display: table-cell;
+      position: relative;
+      bottom: 0;
+      border-left: 5px;
+      padding: 1px;
+      vertical-align: bottom;
+    }
+    .bar > .content{
+      display: block;
+      border:1px black solid;
+      background-color: cornsilk;
+    }
+    .bar > label.dim{
+      position: absolute;
+      width: 100%;
+      text-align: center;
+    }
+
+    .bar > .freq{
+      display: inline-block;
+      top: -20px;
+      position: relative;
+      width: 100%;
+    }
+
+    .freq > label{
+      transition-duration: 500ms;
+      transition-property: opacity;
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      z-index: 99999;
+      pointer-events: none;
+    }
+    .bar:hover > .freq > label{
+      opacity: 100;
+    }
+    .bar:hover > .content{
+      background-color: lawngreen;
+    }
+
+  </style>
 </head>
+
 <body>
-    <script type="text/javascript">
-      // Your beautiful D3 code will go here
-    </script>
-  </body>
+  <div class="container">
+
+  </div><br><Br>
+  <input type="range" min="5" max="100" value="50" onchange="sliderChange(this)" onmousemove="updateLabel(this)">
+  <label id="perc">調整精度</label>
+  <script type="text/javascript">
+  Array.prototype.insert = function ( index, item ) {
+    this.splice( index, 0, item );
+};
+    // Your beautiful D3 code will go here
+    var container = d3.select(".container");
+    var rowCount = 0;
+    var bars = [];
+    var origData = [];
+    var processData = [];
+    var smoothData = [];
+    var s
+
+    d3.csv("data.csv",(data)=>{
+      origData.push(data);
+      smoothData.push(parseInt(data["頻率"]));
+    }).then((data_all)=>{
+      processData = origData;
+      s = Smooth(smoothData, { scaleTo:smoothData.length-1 });
+      console.log(processData);
+      renderData(processData);
+    });
+
+    function subDivide(percision){
+        processData = []
+        for(var i=0;i<origData.length;i+=percision){
+          value = s(i);
+          if(Math.abs(i - parseInt(i)) < 0.1){
+            processData.push({"頻率" : value,"組界": origData[parseInt(i)]["組界"]});
+          }else{
+            processData.push({"頻率" : value});
+          }
+        }
+        renderData(processData)
+    }
+
+    
+
+    function renderData(datas){
+      container.html("");
+      datas.forEach((data) => {
+      rowCount++;
+      var bar = container.append("div")
+      bar.attr("class","bar");
+
+      bar
+      .append("div")
+      .attr("class","freq")
+      .append("label")
+      .html(data["頻率"]);
+
+      bar.append("div")
+      .attr("class","content")
+      .attr("style","height:"+data["頻率"] * 10+"px")
+      ;
+
+      bar.append("label")
+      .attr("class","dim")
+      .html(data["組界"]);
+      bars.push(bar);
+    });
+    }
+
+    function sliderChange(el){
+      var vl = el.value / 50;
+      console.log(vl);
+      subDivide(vl);
+    }
+    var label = document.getElementById("perc");
+    function updateLabel(el){
+      label.innerHTML = (el.value / 50);
+    }
+
+/*
+    d3.csv("data.csv", (data) => {
+      rowCount++;
+      var bar = container.append("div")
+      bar.attr("class","bar");
+
+      bar
+      .append("div")
+      .attr("class","freq")
+      .append("label")
+      .html(data["頻率"]);
+
+      bar.append("div")
+      .attr("class","content")
+      .attr("style","height:"+data["頻率"] * 10+"px")
+      ;
+
+      bar.append("label")
+      .attr("class","dim")
+      .html(data["組界"]);
+      bars.push(bar);
+    })*/
+  </script>
+</body>
+
 </html>
-  
